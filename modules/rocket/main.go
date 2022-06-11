@@ -21,7 +21,7 @@ var (
 	dialect          = g.Dialect("mysql")
 )
 
-func Parse(endpoints []string, path string) {
+func Parse(service *common.BuildInfo, endpoints []string, path string) {
 
 	var err error
 	conf := common.ConfParse(endpoints, path)
@@ -31,7 +31,8 @@ func Parse(endpoints []string, path string) {
 	db = conn.InitDB(conf.Db.Master.Addr, conf.Db.Master.MaxIdleConn, conf.Db.Master.MaxIdleConn)
 	// 初始化td
 	td = conn.InitTD(conf.Td.Addr, conf.Td.MaxIdleConn, conf.Td.MaxOpenConn)
-	common.InitTD(td)
+	common.InitTD(td, prefix)
+	go service.Start()
 
 	merchantConsumer, err = rocketmq.NewPushConsumer(
 		consumer.WithGroupName("merchant"),

@@ -11,12 +11,14 @@ import (
 )
 
 var (
-	db *sqlx.DB
+	db     *sqlx.DB
+	prefix string
 )
 
 // InitTD 初始化td
-func InitTD(td *sqlx.DB) {
+func InitTD(td *sqlx.DB, p string) {
 	db = td
+	prefix = p
 }
 
 func Log(flag, format string, v ...interface{}) {

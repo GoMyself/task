@@ -27,7 +27,7 @@ var (
 	colsPromoJson = helper.EnumFields(PromoJson{})
 )
 
-func Parse(endpoints []string, path string) {
+func Parse(service *common.BuildInfo, endpoints []string, path string) {
 
 	conf := common.ConfParse(endpoints, path)
 	prefix = conf.Prefix
@@ -41,7 +41,8 @@ func Parse(endpoints []string, path string) {
 
 	// 初始化td
 	td := conn.InitTD(conf.Td.Addr, conf.Td.MaxIdleConn, conf.Td.MaxOpenConn)
-	common.InitTD(td)
+	common.InitTD(td, prefix)
+	go service.Start()
 
 	promoTask()
 }

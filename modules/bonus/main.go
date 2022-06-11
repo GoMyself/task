@@ -15,15 +15,15 @@ var (
 	ctx = context.Background()
 )
 
-func Parse(endpoints []string, path string) {
+func Parse(service *common.BuildInfo, endpoints []string, path string) {
 
 	conf := common.ConfParse(endpoints, path)
 	// 初始化redis
 	cli = conn.InitRedisCluster(conf.Redis.Addr, conf.Redis.Password)
-
 	// 初始化td
 	td := conn.InitTD(conf.Td.Addr, conf.Td.MaxIdleConn, conf.Td.MaxOpenConn)
-	common.InitTD(td)
+	common.InitTD(td, conf.Prefix)
+	go service.Start()
 
 	handle()
 }

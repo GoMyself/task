@@ -22,21 +22,19 @@ var (
 	dialect  = g.Dialect("mysql")
 )
 
-func Parse(endpoints []string, path string) {
+func Parse(service *common.BuildInfo, endpoints []string, path string) {
 
 	conf := common.ConfParse(endpoints, path)
-
 	prefix = conf.Prefix
-
 	loc, _ = time.LoadLocation("Asia/Bangkok")
 	// 初始化db
 	db = conn.InitDB(conf.Db.Master.Addr, conf.Db.Master.MaxIdleConn, conf.Db.Master.MaxIdleConn)
 	// 初始化beanstalk
 	beanPool = conn.InitBeanstalk(conf.Beanstalkd.Addr, 50, 50, 100)
-
 	// 初始化td
 	td = conn.InitTD(conf.Td.Addr, conf.Td.MaxIdleConn, conf.Td.MaxOpenConn)
-	common.InitTD(td)
+	common.InitTD(td, prefix)
+	go service.Start()
 
 	batchMessageTask()
 }

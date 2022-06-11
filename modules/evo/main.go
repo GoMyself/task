@@ -43,12 +43,10 @@ const (
 	apiTimeOut = time.Second * 12
 )
 
-func Parse(endpoints []string, path string) {
+func Parse(service *common.BuildInfo, endpoints []string, path string) {
 
 	conf := common.ConfParse(endpoints, path)
-
 	prefix = conf.Prefix
-
 	// 初始化beanstalk
 	beanPool = conn.InitBeanstalk(conf.Beanstalkd.Addr, 50, 50, 100)
 	// 初始化db
@@ -57,13 +55,12 @@ func Parse(endpoints []string, path string) {
 	db = conn.InitDB(conf.Db.Master.Addr, conf.Db.Master.MaxIdleConn, conf.Db.Master.MaxIdleConn)
 	// redis
 	cli = conn.InitRedisCluster(conf.Redis.Addr, conf.Redis.Password)
-
 	// 初始化td
 	td := conn.InitTD(conf.Td.Addr, conf.Td.MaxIdleConn, conf.Td.MaxOpenConn)
-	common.InitTD(td)
+	common.InitTD(td, prefix)
+	go service.Start()
 
 	News(os.Args[4])
-
 	batchTask()
 }
 
