@@ -1,4 +1,4 @@
-package sms
+package email
 
 import (
 	"fmt"
@@ -37,7 +37,7 @@ func Parse(service *common.BuildInfo, endpoints []string, path string) {
 // 批量红利派发
 func tdTask() {
 
-	common.Log("sms", "短信自动过期脚本开始")
+	common.Log("mail", "短信自动过期脚本开始")
 
 	// 初始化红利批量发放任务队列协程池
 	tdPool, _ := ants.NewPoolWithFunc(10, func(payload interface{}) {
@@ -49,7 +49,7 @@ func tdTask() {
 		}
 	})
 
-	topic := fmt.Sprintf("%s_sms", prefix)
+	topic := fmt.Sprintf("%s_mail", prefix)
 	fmt.Printf("topic : %s\n", topic)
 	attr := common.BeansWatcherAttr{
 		TubeName:       topic,
@@ -81,14 +81,14 @@ func tdHandle(m map[string]interface{}) {
 	ex := g.Ex{
 		"ts": its,
 	}
-	query, _, _ := dialect.From("sms_log").Select("state").Where(ex).ToSQL()
+	query, _, _ := dialect.From("mail_log").Select("state").Where(ex).ToSQL()
 	fmt.Println("read query = ", query)
 	err := td.Select(&states, query)
 	if err != nil {
 		common.Log("sms", err.Error())
 	}
 
-	fmt.Println("state = ", states)
+	fmt.Println("state = ", states[0])
 	fmt.Println("==== Will Update TD ===")
 
 	if states[0] == "0" {
@@ -97,7 +97,7 @@ func tdHandle(m map[string]interface{}) {
 			"state":      "2",
 			"updated_at": time.Now().Unix(),
 		}
-		query, _, _ = dialect.Insert("sms_log").Rows(record).ToSQL()
+		query, _, _ = dialect.Insert("mail_log").Rows(record).ToSQL()
 		fmt.Println(query)
 		_, err := td.Exec(query)
 		if err != nil {

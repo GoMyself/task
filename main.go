@@ -9,6 +9,7 @@ import (
 	"task/modules/banner"
 	"task/modules/bonus"
 	"task/modules/common"
+	"task/modules/email"
 	"task/modules/evo"
 	"task/modules/message"
 	"task/modules/promo"
@@ -33,6 +34,7 @@ var cb = map[string]fn{
 	"message": message.Parse, //站内信批量发送
 	"promo":   promo.Parse,   //活动流水更新
 	"sms":     sms.Parse,     //短信自动过期
+	"email":   email.Parse,   //邮件自动过期
 	"rocket":  rocket.Parse,  //rocketMQ 消息站内信消息
 }
 
