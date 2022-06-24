@@ -95,7 +95,7 @@ func tdHandle(m map[string]interface{}) {
 	fmt.Println("state = ", states)
 	fmt.Println("==== Will Update TD ===")
 
-	if states[0] == "0" {
+	if states[0] == "1" {
 		record := g.Record{
 			"ts":         its,
 			"state":      "2",
