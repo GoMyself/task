@@ -1,6 +1,7 @@
 package sms
 
 import (
+	"database/sql"
 	"fmt"
 	g "github.com/doug-martin/goqu/v9"
 	_ "github.com/doug-martin/goqu/v9/dialect/mysql"
@@ -77,25 +78,25 @@ func tdHandle(m map[string]interface{}) {
 		fmt.Println("parse int err:", e)
 	}
 
-	var states []string
+	var state int
 	ex := g.Ex{
 		"ts": its,
 	}
 	query, _, _ := dialect.From("sms_log").Select("state").Where(ex).ToSQL()
-	fmt.Println("read query = ", query)
-	err := td.Select(&states, query)
+	fmt.Println(query)
+	err := td.Get(&state, query)
 	if err != nil {
-		common.Log("sms", err.Error())
-	}
+		if err != sql.ErrNoRows {
+			common.Log("sms", err.Error())
+		}
 
-	if len(states) == 0 {
 		return
 	}
 
-	fmt.Println("state = ", states)
+	fmt.Println("state = ", state)
 	fmt.Println("==== Will Update TD ===")
 
-	if states[0] == "1" {
+	if state == 1 {
 		record := g.Record{
 			"ts":         its,
 			"state":      "3",
