@@ -81,11 +81,15 @@ func tdHandle(m map[string]interface{}) {
 	ex := g.Ex{
 		"ts": its,
 	}
-	query, _, _ := dialect.From("mail_log").Select("state").Where(ex).ToSQL()
+	query, _, _ := dialect.From("mail_log").Select("state").Where(ex).Limit(1).ToSQL()
 	fmt.Println("read query = ", query)
-	err := td.Select(&states, query)
+	err := td.Get(&states, query)
 	if err != nil {
 		common.Log("sms", err.Error())
+	}
+
+	if len(states) == 0 {
+		return
 	}
 
 	fmt.Println("state = ", states[0])

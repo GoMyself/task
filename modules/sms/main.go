@@ -88,6 +88,10 @@ func tdHandle(m map[string]interface{}) {
 		common.Log("sms", err.Error())
 	}
 
+	if len(states) == 0 {
+		return
+	}
+
 	fmt.Println("state = ", states)
 	fmt.Println("==== Will Update TD ===")
 
