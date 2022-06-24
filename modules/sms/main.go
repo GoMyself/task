@@ -98,7 +98,7 @@ func tdHandle(m map[string]interface{}) {
 	if states[0] == "1" {
 		record := g.Record{
 			"ts":         its,
-			"state":      "2",
+			"state":      "3",
 			"updated_at": time.Now().Unix(),
 		}
 		query, _, _ = dialect.Insert("sms_log").Rows(record).ToSQL()
