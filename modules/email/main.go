@@ -76,6 +76,7 @@ func tdHandle(m map[string]interface{}) {
 	its, e := strconv.ParseInt(ts, 10, 64)
 	if e != nil {
 		fmt.Println("parse int err:", e)
+		return
 	}
 
 	var state int
@@ -87,7 +88,7 @@ func tdHandle(m map[string]interface{}) {
 	err := td.Get(&state, query)
 	if err != nil {
 		if err != sql.ErrNoRows {
-			common.Log("sms", err.Error())
+			common.Log("mail", err.Error())
 		}
 
 		return
@@ -106,8 +107,8 @@ func tdHandle(m map[string]interface{}) {
 		fmt.Println(query)
 		_, err := td.Exec(query)
 		if err != nil {
-			fmt.Println(err)
-			common.Log("sms", "update td = error : %s , sql : %s", err.Error(), query)
+			common.Log("mail", "update td = error : %s , sql : %s", err.Error(), query)
+			return
 		}
 	}
 	fmt.Println("==== End Update TD ===")
