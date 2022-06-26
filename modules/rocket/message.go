@@ -14,10 +14,10 @@ import (
 	"time"
 )
 
-func batchCgBetTask() {
+func batchMessageTask() {
 
 	// 初始化投注记录任务队列协程池
-	confirmPool, _ := ants.NewPoolWithFunc(500, func(bet interface{}) {
+	messagePool, _ := ants.NewPoolWithFunc(500, func(bet interface{}) {
 
 		if payload, ok := bet.(string); ok {
 			// 站内信处理
@@ -32,7 +32,7 @@ func batchCgBetTask() {
 
 			fmt.Println("message 收到消息：", string(msgs[i].Body))
 			// 注单自动确认
-			if err := confirmPool.Invoke(string(msgs[i].Body)); err != nil {
+			if err := messagePool.Invoke(string(msgs[i].Body)); err != nil {
 				fmt.Printf("invoke error: %s\n", err.Error())
 				continue
 			}

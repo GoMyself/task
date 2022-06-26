@@ -21,7 +21,7 @@ var (
 	dialect          = g.Dialect("mysql")
 )
 
-func Parse(service *common.BuildInfo, endpoints []string, path string) {
+func Parse(service *common.BuildInfo, endpoints []string, path, flag string) {
 
 	var err error
 	conf := common.ConfParse(endpoints, path)
@@ -43,7 +43,12 @@ func Parse(service *common.BuildInfo, endpoints []string, path string) {
 		log.Fatalln(err)
 	}
 
-	batchCgBetTask()
+	switch flag {
+	case "message":
+		batchMessageTask()
+	case "transferag":
+		batchTransferAgTask()
+	}
 
 	err = merchantConsumer.Start()
 	if err != nil {

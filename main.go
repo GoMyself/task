@@ -35,14 +35,19 @@ var cb = map[string]fn{
 	"promo":   promo.Parse,   //活动流水更新
 	"sms":     sms.Parse,     //短信自动过期
 	"email":   email.Parse,   //邮件自动过期
-	"rocket":  rocket.Parse,  //rocketMQ 消息站内信消息
+}
+
+type fnP func(*common.BuildInfo, []string, string, string)
+
+var cbP = map[string]fnP{
+	"rocket": rocket.Parse, //rocketMQ 消息站内信消息
 }
 
 func main() {
 
 	argc := len(os.Args)
 	if argc != 5 {
-		fmt.Printf("%s <etcds> <cfgPath> [upgrade][transferConfirm][dividend][birthDividend][monthlyDividend][rebate][message] <proxy>\n", os.Args[0])
+		fmt.Printf("%s <etcds> <cfgPath> [banner][bonus][email][evo][message][promo][risk][rocket] <proxy|flag>\n", os.Args[0])
 		return
 	}
 
@@ -51,8 +56,13 @@ func main() {
 	fmt.Printf("gitReversion = %s\r\nbuildGoVersion = %s\r\nbuildTime = %s\r\n", gitReversion, buildGoVersion, buildTime)
 
 	if val, ok := cb[os.Args[3]]; ok {
-		service := common.NewService(os.Args[3], gitReversion, buildTime, buildGoVersion, helper.ServiceTask)
+		service := common.NewService(os.Args[3]+"|"+os.Args[4], gitReversion, buildTime, buildGoVersion, helper.ServiceTask)
 		val(&service, endpoints, os.Args[2])
+	}
+
+	if val, ok := cbP[os.Args[3]]; ok {
+		service := common.NewService(os.Args[3]+"|"+os.Args[4], gitReversion, buildTime, buildGoVersion, helper.ServiceTask)
+		val(&service, endpoints, os.Args[2], os.Args[4])
 	}
 
 	fmt.Println(os.Args[3], "done")
