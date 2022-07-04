@@ -21,6 +21,7 @@ func batchTransferAgTask() {
 	})
 
 	topic := prefix + "_transfer_ag"
+	fmt.Println(topic)
 	merchantConsumer.Subscribe(topic, consumer.MessageSelector{}, func(ctx context.Context,
 		msgs ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
 		for i := range msgs {
