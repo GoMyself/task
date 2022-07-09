@@ -283,6 +283,18 @@ func sendHandle(param map[string]interface{}) {
 				return
 			}
 		}
+	case "2", "3": //直属下级站内信/所有下级站内信
+		//会员名
+		usernames, ok := param["usernames"].(string)
+		if !ok || usernames == "" {
+			common.Log("rocketMessage", "sendHandle usernames param null : %v \n", param)
+			return
+		}
+
+		err := sendSubMessage(msgID, title, subTitle, content, isPush, sendName, prefix, usernames, iIsTop, iIsVip, iTy)
+		if err != nil {
+			return
+		}
 	}
 
 	record := g.Record{
@@ -331,6 +343,52 @@ func sendLevelMessage(msgID, title, subTitle, content, isPush, sendName, prefix,
 		err = sendMessage(msgID, title, subTitle, content, isPush, sendName, prefix, isTop, isVip, ty, ns)
 		if err != nil {
 			common.Log("message", "sendMessage error : %v \n", err)
+			return err
+		}
+	}
+
+	return nil
+}
+
+func sendSubMessage(msgID, title, subTitle, content, isPush, sendName, prefix, username string, isTop, isVip, ty int) error {
+
+	ex := g.Ex{}
+	if isVip == 2 {
+		ex["parent_name"] = username
+	} else if isVip == 3 {
+		ex["top_name"] = username
+	} else {
+		common.Log("rocketMessage", "isVip param error : %s", isVip)
+		return nil
+	}
+	count, err := common.MembersCount(db, ex)
+	if err != nil {
+		common.Log("rocketMessage", "error : %v", err)
+		return err
+	}
+
+	fmt.Printf("count : %d\n", count)
+
+	if count == 0 {
+		return nil
+	}
+
+	p := count / 100
+	l := count % 100
+	if l > 0 {
+		p += 1
+	}
+
+	for j := 1; j <= p; j++ {
+		ns, err := common.MembersPageNames(db, j, 100, ex)
+		if err != nil {
+			common.Log("rocketMessage", "MembersPageNames error : %v \n", err)
+			return err
+		}
+
+		err = sendMessage(msgID, title, subTitle, content, isPush, sendName, prefix, isTop, isVip, ty, ns)
+		if err != nil {
+			common.Log("rocketMessage", "sendMessage error : %v \n", err)
 			return err
 		}
 	}
