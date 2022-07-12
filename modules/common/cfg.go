@@ -7,7 +7,6 @@ import (
 type Conf struct {
 	Lang         string `json:"lang"`
 	Prefix       string `json:"prefix"`
-	EsPrefix     string `json:"es_prefix"`
 	PullPrefix   string `json:"pull_prefix"`
 	IsDev        bool   `json:"is_dev"`
 	Sock5        string `json:"sock5"`
@@ -60,11 +59,6 @@ type Conf struct {
 		UseSSL          bool   `json:"useSSL"`
 		UploadURL       string `json:"uploadUrl"`
 	} `json:"minio"`
-	Es struct {
-		Host     []string `json:"host"`
-		Username string   `json:"username"`
-		Password string   `json:"password"`
-	} `json:"es"`
 }
 
 func ConfParse(endpoints []string, path string) Conf {
