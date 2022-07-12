@@ -35,7 +35,7 @@ func Parse(service *common.BuildInfo, endpoints []string, path, flag string) {
 	go service.Start()
 
 	merchantConsumer, err = rocketmq.NewPushConsumer(
-		consumer.WithGroupName(prefix+"rocket"),
+		consumer.WithGroupName(prefix+"_rocket_"+flag),
 		consumer.WithNameServer(conf.Rocketmq),
 		consumer.WithConsumerModel(consumer.Clustering),
 	)
