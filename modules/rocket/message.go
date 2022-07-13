@@ -25,7 +25,7 @@ func batchMessageTask() {
 		}
 	})
 
-	topic := prefix + "_message"
+	topic := prefix + "_messages"
 	merchantConsumer.Subscribe(topic, consumer.MessageSelector{}, func(ctx context.Context,
 		msgs ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
 		for i := range msgs {

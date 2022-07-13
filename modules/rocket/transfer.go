@@ -20,7 +20,7 @@ func batchTransferAgTask() {
 		}
 	})
 
-	topic := prefix + "_transfer_ag"
+	topic := prefix + "_transfer_ags"
 	fmt.Println(topic)
 	merchantConsumer.Subscribe(topic, consumer.MessageSelector{}, func(ctx context.Context,
 		msgs ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
