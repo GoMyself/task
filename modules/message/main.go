@@ -373,7 +373,8 @@ func sendAllSubMessage(msgID, title, subTitle, content, isPush, sendName, prefix
 	}
 
 	ex := g.Ex{
-		"descendant": mb.UID,
+		"ancestor": mb.UID,
+		"prefix":   prefix,
 	}
 	ns, err := common.MemberTresSubNames(db, ex)
 	if err != nil {
