@@ -216,7 +216,7 @@ func MemberTresSubNames(db *sqlx.DB, ex g.Ex) ([]string, error) {
 		return usernames, err
 	}
 
-	if len(usernames) == 0 {
+	if len(uids) == 0 {
 		return usernames, nil
 	}
 
