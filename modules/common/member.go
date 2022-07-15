@@ -209,7 +209,7 @@ func MemberTresSubNames(db *sqlx.DB, ex g.Ex) ([]string, error) {
 		uids      []string
 		usernames []string
 	)
-	query, _, _ := dialect.From("tbl_members_tree").Select("uid").Where(ex).ToSQL()
+	query, _, _ := dialect.From("tbl_members_tree").Select("descendant").Where(ex).ToSQL()
 	fmt.Println(query)
 	err := db.Select(&uids, query)
 	if err != nil {
