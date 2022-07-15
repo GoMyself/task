@@ -275,7 +275,7 @@ func sendHandle(param map[string]interface{}) {
 				return
 			}
 		}
-	case "2", "3": //直属下级站内信/所有下级站内信
+	case "2": //直属下级站内信
 		//会员名
 		usernames, ok := param["usernames"].(string)
 		if !ok || usernames == "" {
@@ -284,6 +284,18 @@ func sendHandle(param map[string]interface{}) {
 		}
 
 		err := sendSubMessage(msgID, title, subTitle, content, isPush, sendName, prefix, usernames, iIsTop, iIsVip, iTy)
+		if err != nil {
+			return
+		}
+	case "3": //所有下级站内信
+		//会员名
+		usernames, ok := param["usernames"].(string)
+		if !ok || usernames == "" {
+			common.Log("rocketMessage", "sendHandle usernames param null : %v \n", param)
+			return
+		}
+
+		err := sendAllSubMessage(msgID, title, subTitle, content, isPush, sendName, prefix, usernames, iIsTop, iIsVip, iTy)
 		if err != nil {
 			return
 		}
@@ -337,6 +349,32 @@ func sendLevelMessage(msgID, title, subTitle, content, isPush, sendName, prefix,
 			common.Log("rocketMessage", "sendMessage error : %v \n", err)
 			return err
 		}
+	}
+
+	return nil
+}
+
+func sendAllSubMessage(msgID, title, subTitle, content, isPush, sendName, prefix, username string, isTop, isVip, ty int) error {
+
+	mb, err := common.MemberFindOne(db, username)
+	if err != nil {
+		common.Log("rocketMessage", "MemberFindOne error : %v \n", err)
+		return err
+	}
+
+	ex := g.Ex{
+		"descendant": mb.UID,
+	}
+	ns, err := common.MemberTresSubNames(db, ex)
+	if err != nil {
+		common.Log("rocketMessage", "MemberTresSubNames error : %v \n", err)
+		return err
+	}
+
+	err = sendMessage(msgID, title, subTitle, content, isPush, sendName, prefix, isTop, isVip, ty, ns)
+	if err != nil {
+		common.Log("rocketMessage", "sendMessage error : %v \n", err)
+		return err
 	}
 
 	return nil

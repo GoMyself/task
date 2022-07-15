@@ -203,6 +203,30 @@ func MemberBalance(db *sqlx.DB, uid string) (decimal.Decimal, error) {
 	return balance, nil
 }
 
+func MemberTresSubNames(db *sqlx.DB, ex g.Ex) ([]string, error) {
+
+	var (
+		uids      []string
+		usernames []string
+	)
+	query, _, _ := dialect.From("tbl_members_tree").Select("uid").Where(ex).ToSQL()
+	fmt.Println(query)
+	err := db.Select(&uids, query)
+	if err != nil {
+		return usernames, err
+	}
+
+	if len(usernames) == 0 {
+		return usernames, nil
+	}
+
+	query, _, _ = dialect.From("tbl_members").Select(g.COUNT("username")).Where(g.Ex{"uid": uids}).ToSQL()
+	fmt.Println(query)
+	err = db.Select(&usernames, query)
+
+	return usernames, err
+}
+
 func MembersCount(db *sqlx.DB, ex g.Ex) (int, error) {
 
 	var count int
