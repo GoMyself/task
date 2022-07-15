@@ -176,6 +176,8 @@ func sendHandle(param map[string]interface{}) {
 	isVips := map[string]bool{
 		"0": true,
 		"1": true,
+		"2": true,
+		"3": true,
 	}
 	if _, ok := isVips[isVip]; !ok {
 		common.Log("rocketMessage", "sendHandle is_vip param err : %s \n", isVip)
