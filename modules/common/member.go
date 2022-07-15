@@ -220,7 +220,7 @@ func MemberTresSubNames(db *sqlx.DB, ex g.Ex) ([]string, error) {
 		return usernames, nil
 	}
 
-	query, _, _ = dialect.From("tbl_members").Select(g.COUNT("username")).Where(g.Ex{"uid": uids}).ToSQL()
+	query, _, _ = dialect.From("tbl_members").Select("username").Where(g.Ex{"uid": uids}).ToSQL()
 	fmt.Println(query)
 	err = db.Select(&usernames, query)
 
