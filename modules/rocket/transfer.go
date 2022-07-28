@@ -102,7 +102,6 @@ func transferHandle(param map[string]string) error {
 		"top_uid":     topUid,
 		"top_name":    topName,
 	}
-
 	query, _, _ := dialect.Update("tbl_member_dividend").Set(record).Where(ex).ToSQL()
 	_, err := db.Exec(query)
 	if err != nil {

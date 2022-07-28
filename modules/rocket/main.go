@@ -30,8 +30,10 @@ func Parse(service *common.BuildInfo, endpoints []string, path, flag string) {
 	// 初始化db
 	db = conn.InitDB(conf.Db.Master.Addr, conf.Db.Master.MaxIdleConn, conf.Db.Master.MaxIdleConn)
 	// 初始化td
-	td = conn.InitTD(conf.Td.Addr, conf.Td.MaxIdleConn, conf.Td.MaxOpenConn)
-	common.InitTD(td, prefix)
+	td = conn.InitTD(conf.Td.Message.Addr, conf.Td.Message.MaxIdleConn, conf.Td.Message.MaxOpenConn)
+	// 初始化td
+	logTD := conn.InitTD(conf.Td.Log.Addr, conf.Td.Log.MaxIdleConn, conf.Td.Log.MaxOpenConn)
+	common.InitTD(logTD, prefix)
 	go service.Start()
 
 	merchantConsumer, err = rocketmq.NewPushConsumer(

@@ -42,9 +42,16 @@ type Conf struct {
 		} `json:"bet"`
 	} `json:"db"`
 	Td struct {
-		Addr        string `json:"addr"`
-		MaxIdleConn int    `json:"max_idle_conn"`
-		MaxOpenConn int    `json:"max_open_conn"`
+		Log struct {
+			Addr        string `json:"addr"`
+			MaxIdleConn int    `json:"max_idle_conn"`
+			MaxOpenConn int    `json:"max_open_conn"`
+		} `json:"log"`
+		Message struct {
+			Addr        string `json:"addr"`
+			MaxIdleConn int    `json:"max_idle_conn"`
+			MaxOpenConn int    `json:"max_open_conn"`
+		} `json:"message"`
 	} `json:"td"`
 	Redis struct {
 		Addr     []string `json:"addr"`
