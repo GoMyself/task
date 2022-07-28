@@ -21,8 +21,8 @@ func Parse(service *common.BuildInfo, endpoints []string, path string) {
 	// 初始化redis
 	cli = conn.InitRedisCluster(conf.Redis.Addr, conf.Redis.Password)
 	// 初始化td
-	td := conn.InitTD(conf.Td.Addr, conf.Td.MaxIdleConn, conf.Td.MaxOpenConn)
-	common.InitTD(td, conf.Prefix)
+	logTD := conn.InitTD(conf.Td.Log.Addr, conf.Td.Log.MaxIdleConn, conf.Td.Log.MaxOpenConn)
+	common.InitTD(logTD, conf.Prefix)
 	go service.Start()
 
 	handle()

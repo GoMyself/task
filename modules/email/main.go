@@ -28,8 +28,10 @@ func Parse(service *common.BuildInfo, endpoints []string, path string) {
 	// 初始化beanstalk
 	beanPool = conn.InitBeanstalk(conf.Beanstalkd.Addr, 50, 50, 100)
 	// 初始化td
-	td = conn.InitTD(conf.Td.Addr, conf.Td.MaxIdleConn, conf.Td.MaxOpenConn)
-	common.InitTD(td, prefix)
+	td = conn.InitTD(conf.Td.Message.Addr, conf.Td.Message.MaxIdleConn, conf.Td.Message.MaxOpenConn)
+	// 初始化td
+	logTD := conn.InitTD(conf.Td.Log.Addr, conf.Td.Log.MaxIdleConn, conf.Td.Log.MaxOpenConn)
+	common.InitTD(logTD, prefix)
 	go service.Start()
 
 	tdTask()
