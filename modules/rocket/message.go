@@ -130,12 +130,6 @@ func sendHandle(param map[string]interface{}) {
 		common.Log("rocketMessage", "sendHandle title param null : %v \n", param)
 		return
 	}
-	//副标题
-	subTitle, ok := param["sub_title"].(string)
-	if !ok {
-		common.Log("rocketMessage", "sendHandle sub_title param null : %v \n", param)
-		return
-	}
 	//内容
 	content, ok := param["content"].(string)
 	if !ok {
@@ -248,14 +242,14 @@ func sendHandle(param map[string]interface{}) {
 		// 分页发送
 		for j := 0; j < p; j++ {
 			offset := j * 100
-			err := sendMessage(msgID, title, subTitle, content, isPush, sendName, prefix, iIsTop, iIsVip, iTy, names[offset:offset+100])
+			err := sendMessage(msgID, title, content, isPush, sendName, prefix, iIsTop, iIsVip, iTy, names[offset:offset+100])
 			if err != nil {
 				return
 			}
 		}
 		// 最后一页
 		if l > 0 {
-			err := sendMessage(msgID, title, subTitle, content, isPush, sendName, prefix, iIsTop, iIsVip, iTy, names[p*100:])
+			err := sendMessage(msgID, title, content, isPush, sendName, prefix, iIsTop, iIsVip, iTy, names[p*100:])
 			if err != nil {
 				return
 			}
@@ -270,7 +264,7 @@ func sendHandle(param map[string]interface{}) {
 
 		lvs := strings.Split(level, ",")
 		for _, v := range lvs {
-			err := sendLevelMessage(msgID, title, subTitle, content, isPush, sendName, prefix, v, iIsTop, iIsVip, iTy)
+			err := sendLevelMessage(msgID, title, content, isPush, sendName, prefix, v, iIsTop, iIsVip, iTy)
 			if err != nil {
 				return
 			}
@@ -283,7 +277,7 @@ func sendHandle(param map[string]interface{}) {
 			return
 		}
 
-		err := sendSubMessage(msgID, title, subTitle, content, isPush, sendName, prefix, usernames, iIsTop, iIsVip, iTy)
+		err := sendSubMessage(msgID, title, content, isPush, sendName, prefix, usernames, iIsTop, iIsVip, iTy)
 		if err != nil {
 			return
 		}
@@ -295,7 +289,7 @@ func sendHandle(param map[string]interface{}) {
 			return
 		}
 
-		err := sendAllSubMessage(msgID, title, subTitle, content, isPush, sendName, prefix, usernames, iIsTop, iIsVip, iTy)
+		err := sendAllSubMessage(msgID, title, content, isPush, sendName, prefix, usernames, iIsTop, iIsVip, iTy)
 		if err != nil {
 			return
 		}
@@ -314,7 +308,7 @@ func sendHandle(param map[string]interface{}) {
 	}
 }
 
-func sendLevelMessage(msgID, title, subTitle, content, isPush, sendName, prefix, level string, isTop, isVip, ty int) error {
+func sendLevelMessage(msgID, title, content, isPush, sendName, prefix, level string, isTop, isVip, ty int) error {
 
 	ex := g.Ex{
 		"level": level,
@@ -344,7 +338,7 @@ func sendLevelMessage(msgID, title, subTitle, content, isPush, sendName, prefix,
 			return err
 		}
 
-		err = sendMessage(msgID, title, subTitle, content, isPush, sendName, prefix, isTop, isVip, ty, ns)
+		err = sendMessage(msgID, title, content, isPush, sendName, prefix, isTop, isVip, ty, ns)
 		if err != nil {
 			common.Log("rocketMessage", "sendMessage error : %v \n", err)
 			return err
@@ -354,7 +348,7 @@ func sendLevelMessage(msgID, title, subTitle, content, isPush, sendName, prefix,
 	return nil
 }
 
-func sendAllSubMessage(msgID, title, subTitle, content, isPush, sendName, prefix, username string, isTop, isVip, ty int) error {
+func sendAllSubMessage(msgID, title, content, isPush, sendName, prefix, username string, isTop, isVip, ty int) error {
 
 	mb, err := common.MemberFindOne(db, username)
 	if err != nil {
@@ -372,7 +366,7 @@ func sendAllSubMessage(msgID, title, subTitle, content, isPush, sendName, prefix
 		return err
 	}
 
-	err = sendMessage(msgID, title, subTitle, content, isPush, sendName, prefix, isTop, isVip, ty, ns)
+	err = sendMessage(msgID, title, content, isPush, sendName, prefix, isTop, isVip, ty, ns)
 	if err != nil {
 		common.Log("rocketMessage", "sendMessage error : %v \n", err)
 		return err
@@ -381,7 +375,7 @@ func sendAllSubMessage(msgID, title, subTitle, content, isPush, sendName, prefix
 	return nil
 }
 
-func sendSubMessage(msgID, title, subTitle, content, isPush, sendName, prefix, username string, isTop, isVip, ty int) error {
+func sendSubMessage(msgID, title, content, isPush, sendName, prefix, username string, isTop, isVip, ty int) error {
 
 	ex := g.Ex{}
 	if isVip == 2 {
@@ -417,7 +411,7 @@ func sendSubMessage(msgID, title, subTitle, content, isPush, sendName, prefix, u
 			return err
 		}
 
-		err = sendMessage(msgID, title, subTitle, content, isPush, sendName, prefix, isTop, isVip, ty, ns)
+		err = sendMessage(msgID, title, content, isPush, sendName, prefix, isTop, isVip, ty, ns)
 		if err != nil {
 			common.Log("rocketMessage", "sendMessage error : %v \n", err)
 			return err
@@ -427,12 +421,11 @@ func sendSubMessage(msgID, title, subTitle, content, isPush, sendName, prefix, u
 	return nil
 }
 
-func sendMessage(msgID, title, subTitle, content, isPush, sendName, prefix string, isTop, isVip, ty int, names []string) error {
+func sendMessage(msgID, title, content, isPush, sendName, prefix string, isTop, isVip, ty int, names []string) error {
 
 	record := g.Record{
 		"message_id": msgID,
 		"title":      title,
-		"sub_title":  subTitle,
 		"content":    content,
 		"send_name":  sendName,
 		"prefix":     prefix,
